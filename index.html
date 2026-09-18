@@ -20,6 +20,26 @@
       --max: 1180px;
       --radius: 8px;
     }
+    html[data-theme="coral"] {
+      --blue: #b8443f;
+      --teal: #0f766e;
+      --coral: #d97706;
+      --amber: #a16207;
+    }
+    html[data-theme="forest"] {
+      --blue: #1e6b46;
+      --teal: #0f766e;
+      --coral: #b7791f;
+      --amber: #4d7c0f;
+    }
+    html[data-theme="graphite"] {
+      --ink: #202428;
+      --muted: #666d73;
+      --blue: #374151;
+      --teal: #4b5563;
+      --coral: #9a3412;
+      --amber: #78716c;
+    }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
@@ -696,6 +716,109 @@
       height: 3px;
       background: var(--coral);
     }
+    .builder-open {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 90;
+      min-height: 46px;
+      padding: 0 18px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: var(--radius);
+      background: var(--blue);
+      color: white;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(15, 29, 38, .22);
+    }
+    .builder-toolbar {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 95;
+      width: min(1120px, calc(100vw - 28px));
+      transform: translateX(-50%);
+      padding: 14px;
+      border: 1px solid rgba(217, 224, 229, .95);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 18px 50px rgba(15, 29, 38, .2);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .builder-toolbar[hidden] { display: none !important; }
+    .builder-toolbar strong {
+      margin-right: 4px;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .builder-toolbar button,
+    .builder-toolbar select {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .builder-toolbar .danger { color: var(--coral); }
+    .dynamic-module {
+      position: relative;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 72px 24px;
+      border-top: 1px solid var(--line);
+    }
+    .dynamic-module .module-remove {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      min-height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: white;
+      color: var(--coral);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .dynamic-module h2 {
+      margin-bottom: 18px;
+      font-size: clamp(28px, 4vw, 46px);
+    }
+    .dynamic-module p {
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .dynamic-module img,
+    .dynamic-module video {
+      display: block;
+      width: 100%;
+      max-height: 620px;
+      margin-top: 22px;
+      object-fit: contain;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #eef2f3;
+    }
+    .dynamic-module a { color: var(--blue); }
+    .js .builder-editing h1,
+    .js .builder-editing h2,
+    .js .builder-editing h3,
+    .js .builder-editing p,
+    .js .builder-editing figcaption {
+      outline: 1px dashed rgba(13, 94, 138, .75);
+      outline-offset: 4px;
+    }
     .js .reveal {
       opacity: 0;
       transform: translateY(18px);
@@ -979,6 +1102,7 @@
         </div>
       </div>
     </section>
+    <div id="dynamic-sections"></div>
   </main>
 
   <footer class="footer">
@@ -994,6 +1118,26 @@
       </div>
     </div>
   </footer>
+
+  <button class="builder-open" type="button" id="builder-open" hidden>编辑网站</button>
+  <div class="builder-toolbar" id="builder-toolbar" hidden>
+    <strong>网站编辑器</strong>
+    <button type="button" id="builder-edit-text">编辑文字</button>
+    <select id="builder-theme" aria-label="切换设计主题">
+      <option value="ocean">清爽蓝绿</option>
+      <option value="coral">温暖珊瑚</option>
+      <option value="forest">自然绿色</option>
+      <option value="graphite">简约石墨</option>
+    </select>
+    <button type="button" data-add-module="text">添加文字模块</button>
+    <button type="button" data-add-module="image">添加图片模块</button>
+    <button type="button" data-add-module="video">添加视频模块</button>
+    <button type="button" data-add-module="link">添加链接模块</button>
+    <button type="button" id="builder-export">导出网站</button>
+    <button type="button" class="danger" id="builder-close">关闭编辑器</button>
+    <input class="hero-photo-input" id="builder-image-input" type="file" accept="image/*">
+    <input class="hero-photo-input" id="builder-video-input" type="file" accept="video/mp4,video/quicktime,video/webm">
+  </div>
 
   <script id="embedded-acg-video-data" type="application/json">[{"title": "ACG 剪辑 01", "type": "video/mp4", "src": "media/acg/01.mp4"}, {"title": "ACG 剪辑 02", "type": "video/mp4", "src": "media/acg/02.mp4"}, {"title": "ACG 剪辑 03", "type": "video/mp4", "src": "media/acg/03.mp4"}, {"title": "ACG 剪辑 04", "type": "video/mp4", "src": "media/acg/04.mp4"}, {"title": "ACG 剪辑 05", "type": "video/mp4", "src": "media/acg/05.mp4"}, {"title": "ACG 剪辑 06", "type": "video/mp4", "src": "media/acg/06.mp4"}, {"title": "ACG 剪辑 07", "type": "video/mp4", "src": "media/acg/07.mp4"}, {"title": "ACG 剪辑 08", "type": "video/mp4", "src": "media/acg/08.mp4"}, {"title": "ACG 剪辑 09", "type": "video/mp4", "src": "media/acg/09.mp4"}]</script>
   <script>
@@ -1113,27 +1257,6 @@
       renderAcgVideos();
     });
 
-    exportVideoHtml.addEventListener("click", function () {
-      var clone = document.documentElement.cloneNode(true);
-      clone.querySelector("#acg-video-grid").innerHTML = "";
-      clone.querySelector("#embedded-acg-video-data").textContent = JSON.stringify(acgVideoData);
-      clone.querySelector("#acg-video-input").value = "";
-      clone.querySelectorAll("[contenteditable]").forEach(function (element) {
-        element.removeAttribute("contenteditable");
-      });
-      clone.querySelector("#hero-visual")?.classList.remove("editing");
-      var html = "<!doctype html>\n" + clone.outerHTML;
-      var blob = new Blob([html], { type: "text/html;charset=utf-8" });
-      var url = URL.createObjectURL(blob);
-      var link = document.createElement("a");
-      link.href = url;
-      link.download = "秦齐_运营实习作品集网页版_含ACG视频.html";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-    });
-
     function renderHighPerformanceVideo() {
       var host = document.getElementById("high-performance-video");
       if (!host) return;
@@ -1212,6 +1335,192 @@
       };
       reader.readAsDataURL(file);
     });
+
+    var builderOpen = document.getElementById("builder-open");
+    var builderToolbar = document.getElementById("builder-toolbar");
+    var builderTheme = document.getElementById("builder-theme");
+    var builderEditText = document.getElementById("builder-edit-text");
+    var builderExport = document.getElementById("builder-export");
+    var builderClose = document.getElementById("builder-close");
+    var builderImageInput = document.getElementById("builder-image-input");
+    var builderVideoInput = document.getElementById("builder-video-input");
+    var dynamicSections = document.getElementById("dynamic-sections");
+    var themeStorageKey = "qinqi-operation-portfolio-theme";
+    var siteEditing = false;
+
+    function applyTheme(name) {
+      var validThemes = ["ocean", "coral", "forest", "graphite"];
+      if (!validThemes.includes(name)) name = "ocean";
+      if (name === "ocean") {
+        document.documentElement.removeAttribute("data-theme");
+      } else {
+        document.documentElement.setAttribute("data-theme", name);
+      }
+      builderTheme.value = name;
+      try { localStorage.setItem(themeStorageKey, name); } catch (error) {}
+    }
+
+    try {
+      applyTheme(localStorage.getItem(themeStorageKey) || "ocean");
+    } catch (error) {
+      applyTheme("ocean");
+    }
+
+    function setSiteTextEditing(enabled) {
+      document.querySelectorAll("main h1, main h2, main h3, main p, main figcaption").forEach(function (element) {
+        if (element.closest("video")) return;
+        element.setAttribute("contenteditable", enabled ? "true" : "false");
+      });
+      document.documentElement.classList.toggle("builder-editing", enabled);
+      builderEditText.textContent = enabled ? "完成文字编辑" : "编辑文字";
+    }
+
+    function moduleRemoveButton() {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "module-remove";
+      button.textContent = "移除模块";
+      button.addEventListener("click", function () {
+        if (window.confirm("确定移除这个模块吗？")) button.closest(".dynamic-module").remove();
+      });
+      return button;
+    }
+
+    function createTextModule() {
+      var section = document.createElement("section");
+      section.className = "dynamic-module";
+      section.innerHTML = "<h2>自定义文字模块</h2><p>点击这里修改标题和正文内容。</p>";
+      section.appendChild(moduleRemoveButton());
+      dynamicSections.appendChild(section);
+      if (siteEditing) setSiteTextEditing(true);
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function createImageModule(src, filename) {
+      var section = document.createElement("section");
+      section.className = "dynamic-module";
+      section.innerHTML = "<h2>自定义图片模块</h2><p>图片说明可以在这里修改。</p>";
+      var image = document.createElement("img");
+      image.src = src;
+      image.alt = filename || "自定义作品图片";
+      section.appendChild(image);
+      section.appendChild(moduleRemoveButton());
+      dynamicSections.appendChild(section);
+      if (siteEditing) setSiteTextEditing(true);
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function createVideoModule(src, type, filename) {
+      var section = document.createElement("section");
+      section.className = "dynamic-module";
+      section.innerHTML = "<h2>自定义视频模块</h2><p>视频说明可以在这里修改。</p>";
+      var video = document.createElement("video");
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = "metadata";
+      var source = document.createElement("source");
+      source.src = src;
+      source.type = type || "video/mp4";
+      video.appendChild(source);
+      section.appendChild(video);
+      section.appendChild(moduleRemoveButton());
+      dynamicSections.appendChild(section);
+      if (siteEditing) setSiteTextEditing(true);
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function createLinkModule() {
+      var section = document.createElement("section");
+      section.className = "dynamic-module";
+      section.innerHTML = "<h2>相关链接</h2><p><a href='https://example.com' target='_blank' rel='noopener noreferrer'>点击编辑链接地址</a></p>";
+      section.appendChild(moduleRemoveButton());
+      dynamicSections.appendChild(section);
+      if (siteEditing) setSiteTextEditing(true);
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    document.querySelectorAll("[data-add-module]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var type = button.getAttribute("data-add-module");
+        if (type === "text") createTextModule();
+        if (type === "link") createLinkModule();
+        if (type === "image") builderImageInput.click();
+        if (type === "video") builderVideoInput.click();
+      });
+    });
+
+    builderImageInput.addEventListener("change", function () {
+      var file = builderImageInput.files && builderImageInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () { createImageModule(String(reader.result), file.name); };
+      reader.readAsDataURL(file);
+      builderImageInput.value = "";
+    });
+
+    builderVideoInput.addEventListener("change", function () {
+      var file = builderVideoInput.files && builderVideoInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        createVideoModule(String(reader.result), file.type || "video/mp4", file.name);
+      };
+      reader.readAsDataURL(file);
+      builderVideoInput.value = "";
+    });
+
+    function openBuilder() {
+      builderToolbar.hidden = false;
+      builderOpen.hidden = true;
+      siteEditing = true;
+      if (typeof heroEditing !== "undefined" && !heroEditing) setHeroEditing(true);
+      setSiteTextEditing(true);
+    }
+
+    function closeBuilder() {
+      builderToolbar.hidden = true;
+      builderOpen.hidden = false;
+      siteEditing = false;
+      setSiteTextEditing(false);
+      if (typeof heroEditing !== "undefined" && heroEditing) setHeroEditing(false);
+    }
+
+    builderOpen.addEventListener("click", openBuilder);
+    builderClose.addEventListener("click", closeBuilder);
+    builderEditText.addEventListener("click", function () {
+      siteEditing = !siteEditing;
+      setSiteTextEditing(siteEditing);
+    });
+    builderTheme.addEventListener("change", function () { applyTheme(builderTheme.value); });
+
+    function downloadPortfolioHtml() {
+      var clone = document.documentElement.cloneNode(true);
+      clone.querySelector("#acg-video-grid").innerHTML = "";
+      clone.querySelector("#embedded-acg-video-data").textContent = JSON.stringify(acgVideoData);
+      clone.querySelector("#acg-video-input").value = "";
+      clone.querySelectorAll("[contenteditable]").forEach(function (element) {
+        element.removeAttribute("contenteditable");
+      });
+      clone.querySelector("#hero-visual")?.classList.remove("editing");
+      if (clone.querySelector("#builder-toolbar")) clone.querySelector("#builder-toolbar").hidden = true;
+      if (clone.querySelector("#builder-open")) clone.querySelector("#builder-open").hidden = true;
+      var html = "<!doctype html>\n" + clone.outerHTML;
+      var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = "秦齐_运营实习作品集网页版_已编辑.html";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+
+    exportVideoHtml.addEventListener("click", downloadPortfolioHtml);
+    builderExport.addEventListener("click", downloadPortfolioHtml);
+
+    var canShowBuilder = location.protocol === "file:" || new URLSearchParams(location.search).get("edit") === "1";
+    builderOpen.hidden = !canShowBuilder;
 
     renderAcgVideos();
     renderHighPerformanceVideo();
